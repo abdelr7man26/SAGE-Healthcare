@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const MONGO_URI = "mongodb+srv://abdelr7man264_db_user:sage1234@sage-health-care.z2g6clo.mongodb.net/?appName=SAGE-HEALTH-CARE";
+const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ SAGE Database Connected Successfully!"))
