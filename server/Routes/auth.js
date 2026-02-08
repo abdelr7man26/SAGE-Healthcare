@@ -1,16 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const { register, login } = require('../Controllers/authController');
 
 // @route   POST api/auth/register
 // @desc    Register user
-router.post('/register', (req, res) => {
-    res.send('Register endpoint is ready - waiting for controller logic');
-});
+router.post('/register', register);
 
 // @route   POST api/auth/login
 // @desc    Login user
-router.post('/login', (req, res) => {
-    res.send('Login endpoint is ready - waiting for controller logic');
-});
+router.post('/login', login);
 
 module.exports = router;
