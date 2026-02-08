@@ -1,28 +1,25 @@
 const jwt = require('jsonwebtoken');
 
-const auth = (req, res, next) => {
-    // Get token from header
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+const auth = (request, response, next) => {
+    const token = request.header('Authorization')?.replace('Bearer ', '');
 
-    // Check if no token
     if (!token) {
-        return res.status(401).json({ message: 'No token, authorization denied' });
+        return response.status(401).json({ message: 'No token, authorization denied' });
     }
 
-    // Verify token
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded.user;
-        next();
+        request.user = decoded.user;
+        next(); 
     } catch (err) {
-        res.status(401).json({ message: 'Token is not valid' });
+        response.status(401).json({ message: 'Token is not valid' });
     }
 };
 
 const authorize = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ message: 'Access denied' });
+    return (request, response, next) => {
+        if (!roles.includes(request.user.role)) {
+            return response.status(403).json({ message: 'Access denied' });
         }
         next();
     };
