@@ -18,6 +18,9 @@ const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 const authRoutes = require('./Routes/auth');
-
+const doctorRoutes = require('./Routes/doctor');
+const patientRoutes = require('./Routes/patient');
 
 app.use('/api/auth', authRoutes);
+app.use('/api/doctors', doctorRoutes);
+app.use('/api/patients', patientRoutes);
