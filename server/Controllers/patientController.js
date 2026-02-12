@@ -5,7 +5,7 @@ const User = require('../models/User');
 const getAllDoctors = async (req, res) => {
     try {
         const doctors = await DoctorProfile.find({ isApproved: true })
-            .populate('userId', 'name email')
+            .populate('user', 'name email')
             .select('specialization degree bio consultationFee slots');
 
         res.status(200).json({
@@ -24,7 +24,7 @@ const getDoctorById = async (req, res) => {
         const { id } = req.params;
 
         const doctor = await DoctorProfile.findOne({ _id: id, isApproved: true })
-            .populate('userId', 'name email')
+            .populate('user', 'name email')
             .select('specialization degree bio consultationFee slots');
 
         if (!doctor) {

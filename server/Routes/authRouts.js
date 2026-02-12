@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { register, login, getProfile, updateProfile } = require('../Controllers/authController');
+const { register, login, getProfile, updateProfile, updateUserRole } = require('../Controllers/authController');
 
-const { auth } = require('../middleware/auth'); 
+const { auth, authorize} = require('../middleware/auth'); 
+
+// @route    PATCH api/auth/update-role
+router.patch('/update-role', auth, authorize('admin'), updateUserRole);
 
 // @route   POST api/auth/register
 router.post('/register', register);

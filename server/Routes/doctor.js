@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { auth, authorize } = require('../middleware/auth');
-const { updateProfile, setAvailability } = require('../Controllers/doctorController');
+const { updateProfile, setAvailability, getAllDoctors } = require('../Controllers/doctorController');
 const { body } = require('express-validator');
+const { approveDoctor } = require('../Controllers/doctorController');
+
+router.get('/', getAllDoctors);
+
+router.patch('/approve/:doctorId', auth, authorize('admin'), approveDoctor);
 
 // Doctor profile update route with validation
 router.put('/profile', [

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const doctorProfileSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -60,9 +60,8 @@ const doctorProfileSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving
-doctorProfileSchema.pre('save', function(next) {
+doctorProfileSchema.pre('save', async function() {
     this.updatedAt = Date.now();
-    next();
 });
 
 module.exports = mongoose.model('DoctorProfile', doctorProfileSchema);

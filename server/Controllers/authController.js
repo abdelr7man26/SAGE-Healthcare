@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const register = async (request, response) => {
     try {
-        const { name, email, password } = request.body;
+        const { name, email, password, role } = request.body;
 
         // Check if user exists
         const existingUser = await User.findOne({ email });
@@ -16,12 +16,15 @@ const register = async (request, response) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        const allowedRoles = ['patient', 'doctor'];
+        const finalRole = allowedRoles.includes(role) ? role : 'patient';
+
         // Create user
         const user = new User({
             name,
             email,
             password: hashedPassword,
-            role: 'patient' 
+            role: finalRole 
         });
 
         await user.save();
@@ -95,4 +98,35 @@ const updateProfile = async (request, response) => {
     }
 };  
 
-module.exports = { register, login, getProfile, updateProfile };
+const updateUserRole = async (req, res) => {
+    try {
+        const { userid, newRole, adminSecret } = req.body;
+
+        if (newRole === 'admin') {
+            if (adminSecret !== process.env.ADMIN_UPGRADE_SECRET) {
+                return res.status(403).json({ 
+                    message: "Forbidden: You need the Super Admin Secret Key to promote someone to Admin." 
+                });
+            }
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userid, 
+            { role: newRole }, 
+            { new: true }
+        ).select('-password'); 
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ 
+            message: `User role has been successfully updated to ${newRole}`, 
+            user 
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+module.exports = { register, login, getProfile, updateProfile, updateUserRole };

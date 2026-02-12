@@ -5,14 +5,15 @@ const cors = require('cors');
 const helmet = require('helmet'); // security
 const compression = require('compression'); // performance
 const rateLimit = require('express-rate-limit'); // stop attacks
-
 const authRoutes = require('./Routes/authRouts');
-
+const doctorRoutes = require('./Routes/doctor');
+const patientRoutes = require('./Routes/patient');
 const app = express();
+
 
 // (Security)
 app.use(helmet());
-app.use(cors());   // channel between frot and back
+app.use(cors());   // channel between front and back
 
 // منع الطلبات الكثيرة (Rate Limiting) لحماية الـ Login
 const limiter = rateLimit({
@@ -28,10 +29,6 @@ app.use(express.json({ limit: '10kb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-
-const doctorRoutes = require('./Routes/doctor');
-const patientRoutes = require('./Routes/patient');
-
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
 
