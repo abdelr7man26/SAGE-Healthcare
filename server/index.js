@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit'); // stop attacks
 const authRoutes = require('./Routes/authRouts');
 const doctorRoutes = require('./Routes/doctor');
 const patientRoutes = require('./Routes/patient');
+const bookingRoutes = require('./Routes/booking');
 const app = express();
 
 
@@ -31,6 +32,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/patients', patientRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // data base
 const MONGO_URI = process.env.MONGO_URI;
