@@ -1,4 +1,5 @@
 const DoctorProfile = require('../models/DoctorProfile');
+const Booking = require('../models/Booking');
 const { validationResult } = require('express-validator');
 
 // Update doctor profile
@@ -110,4 +111,24 @@ const getAllDoctors = async (req, res) => {
     }
 };
 
-module.exports = { updateProfile, setAvailability, approveDoctor, getAllDoctors };
+// Get bookings for the logged-in doctor
+const getDoctorBookings = async (req, res) => {
+    try {
+        const doctorId = req.user.id;
+
+        const bookings = await Booking.find({ doctor: doctorId })
+            .populate('patient', 'name email')
+            .populate('doctor', 'name email')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            message: 'Bookings retrieved successfully',
+            bookings
+        });
+    } catch (error) {
+        console.error('Error retrieving doctor bookings:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+module.exports = { updateProfile, setAvailability, approveDoctor, getAllDoctors, getDoctorBookings };

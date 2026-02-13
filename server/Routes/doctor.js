@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { auth, authorize } = require('../middleware/auth');
-const { updateProfile, setAvailability, getAllDoctors } = require('../Controllers/doctorController');
+const { updateProfile, setAvailability, getAllDoctors, getDoctorBookings } = require('../Controllers/doctorController');
 const { body } = require('express-validator');
 const { approveDoctor } = require('../Controllers/doctorController');
 
@@ -24,5 +24,8 @@ router.post('/availability', [
     body('slots.*.startTime').notEmpty().withMessage('Start time is required for each slot'),
     body('slots.*.endTime').notEmpty().withMessage('End time is required for each slot')
 ], auth, authorize('doctor'), setAvailability);
+
+// Get bookings for the logged-in doctor
+router.get('/bookings', auth, authorize('doctor'), getDoctorBookings);
 
 module.exports = router;
