@@ -22,6 +22,12 @@ const doctorProfileSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    address: { 
+        city: { type: String, required: true, trim: true }, 
+        area: { type: String, required: true, trim: true }, 
+        fullAddress: { type: String, required: true, trim: true }
+        // شلنا الـ required والـ trim اللي كانوا تايهين هنا
+    },
     consultationFee: {
         type: Number,
         required: true,
@@ -31,37 +37,12 @@ const doctorProfileSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    slots: [{
-        date: {
-            type: Date,
-            required: true
-        },
-        startTime: {
-            type: String,
-            required: true
-        },
-        endTime: {
-            type: String,
-            required: true
-        },
-        isAvailable: {
-            type: Boolean,
-            default: true
-        }
-    }],
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-// Update the updatedAt field before saving
-doctorProfileSchema.pre('save', async function() {
-    this.updatedAt = Date.now();
+doctorProfileSchema.virtual('availableSlots', {
+    ref: 'Slot',            
+    localField: 'user',     
+    foreignField: 'doctor'  
 });
 
 module.exports = mongoose.model('DoctorProfile', doctorProfileSchema);

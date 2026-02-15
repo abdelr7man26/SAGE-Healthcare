@@ -43,20 +43,9 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+   
+},{ timestamps: true });
 
-// Update the updatedAt field before saving
-bookingSchema.pre('save', async function() {
-    this.updatedAt = Date.now();
-});
 
 // Index for efficient queries
 bookingSchema.index({ patient: 1, createdAt: -1 });

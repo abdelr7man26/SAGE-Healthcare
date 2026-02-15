@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const { auth, authorize } = require('../middleware/auth');
-const { updateProfile, setAvailability, getAllDoctors } = require('../Controllers/doctorController');
 const { body } = require('express-validator');
-const { approveDoctor } = require('../Controllers/doctorController');
 
-router.get('/', getAllDoctors);
+// استيراد الكنترولرز صح
+const { updateProfile, approveDoctor } = require('../Controllers/doctorController');
+const { createSlots } = require('../Controllers/slotController'); // تأكد إنها createSlots بالجمع
 
+// 1. إضافة مواعيد (استخدم الاسم الصح للفانكشن)
+router.post('/add-slot', auth, authorize('doctor'), createSlots);
+
+
+// 3. اعتماد دكتور (أدمن)
 router.patch('/approve/:doctorId', auth, authorize('admin'), approveDoctor);
 
-// Doctor profile update route with validation
+// 4. تحديث البروفايل
 router.put('/profile', [
     body('specialization').notEmpty().withMessage('Specialization is required'),
     body('degree').notEmpty().withMessage('Degree is required'),
@@ -17,12 +22,10 @@ router.put('/profile', [
     body('consultationFee').isNumeric().withMessage('Consultation fee must be a number')
 ], auth, authorize('doctor'), updateProfile);
 
-// Set availability route with validation
+// 5. تعديل الـ Availability (لو محتاجها)
+// تأكد إن الكنترولر مفيهوش فانكشن اسمها setAvailability، استبدلها بـ createSlots
 router.post('/availability', [
-    body('slots').isArray({ min: 1 }).withMessage('At least one slot is required'),
-    body('slots.*.date').isISO8601().withMessage('Valid date is required for each slot'),
-    body('slots.*.startTime').notEmpty().withMessage('Start time is required for each slot'),
-    body('slots.*.endTime').notEmpty().withMessage('End time is required for each slot')
-], auth, authorize('doctor'), setAvailability);
+    body('slots').isArray({ min: 1 }).withMessage('At least one slot is required')
+], auth, authorize('doctor'), createSlots);
 
 module.exports = router;
